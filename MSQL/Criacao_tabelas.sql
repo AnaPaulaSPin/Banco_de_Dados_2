@@ -62,8 +62,8 @@ CREATE TABLE Disciplina (
 );
 
 CREATE TABLE Curso_Disciplina (
-  idCurso INT UNSIGNED,
-  idDisciplina INT UNSIGNED,
+  idCurso INT UNSIGNED  NOT NULL,
+  idDisciplina INT UNSIGNED  NOT NULL,
   PRIMARY KEY (idCurso, idDisciplina),
   FOREIGN KEY (idCurso) REFERENCES Curso(idCurso),
   FOREIGN KEY (idDisciplina) REFERENCES Disciplina(idDisciplina)
@@ -110,8 +110,8 @@ CREATE TABLE Turma (
 );
 
 CREATE TABLE Discente_Turma (
-  idDiscente INT UNSIGNED,
-  idTurma INT UNSIGNED,
+  idDiscente INT UNSIGNED  NOT NULL,
+  idTurma INT UNSIGNED  NOT NULL,
   PRIMARY KEY (idDiscente, idTurma),
   FOREIGN KEY (idDiscente) REFERENCES Discente(idDiscente),
   FOREIGN KEY (idTurma) REFERENCES Turma(idTurma)
@@ -148,8 +148,8 @@ CREATE TABLE Avaliacao (
 );
 
 CREATE TABLE Avaliacao_Questao (
-  idAvaliacao INT UNSIGNED,
-  idQuestao INT UNSIGNED,
+  idAvaliacao INT UNSIGNED  NOT NULL,
+  idQuestao INT UNSIGNED NOT NULL,
   PRIMARY KEY (idAvaliacao, idQuestao),
   FOREIGN KEY (idAvaliacao) REFERENCES Avaliacao(idAvaliacao),
   FOREIGN KEY (idQuestao) REFERENCES Questao(idQuestao)
