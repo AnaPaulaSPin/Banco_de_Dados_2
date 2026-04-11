@@ -169,7 +169,7 @@ CREATE TABLE Resultado (
   idResultado INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   idAplicacao INT UNSIGNED NOT NULL,
   idDiscente INT UNSIGNED NOT NULL,
-  nota DECIMAL(4,2),
+  nota DECIMAL(4,2)  NOT NULL,
   FOREIGN KEY (idAplicacao) REFERENCES Aplicacao(idAplicacao),
   FOREIGN KEY (idDiscente) REFERENCES Discente(idDiscente)
 );
