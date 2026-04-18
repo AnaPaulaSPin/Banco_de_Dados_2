@@ -93,15 +93,38 @@ INSERT INTO Discente_Turma (idDiscente, idTurma) VALUES
 (1, 2),
 (3, 3);
 
--- QUESTAO
--- tipo: 1=Multipla escolha, 2=Dissertativa
--- dificuldade: 1=Facil, 2=Media, 3=Dificil
-INSERT INTO Questao (enunciado, tipo, dificuldade, idDisciplina, idDocente) VALUES
-('O que e uma chave primaria em banco de dados?', 1, 1, 1, 1),
-('Explique o conceito de normalizacao.', 2, 2, 1, 1),
-('Qual tag HTML e usada para formularios?', 1, 1, 2, 2);
+-- CONTRATO
+INSERT INTO Contrato (idDocente, dataInicio, dataValidade, bolsa) VALUES
+(1, '2026-01-01', '2026-12-31', 5000.00),
+(2, '2026-01-01', '2026-12-31', 4500.00);
 
--- ALTERNATIVA
+--------------------------------------------------
+-- QUESTÕES (BASE)
+-- dificuldade: 1=Facil, 2=Media, 3=Dificil
+--------------------------------------------------
+INSERT INTO Questao (enunciado, dificuldade, idDisciplina, idContrato) VALUES
+('O que e uma chave primaria em banco de dados?', 1, 1, 1),
+('Explique o conceito de normalizacao.', 2, 1, 1),
+('Qual tag HTML e usada para formularios?', 1, 2, 2);
+
+--------------------------------------------------
+-- QUESTÕES OBJETIVAS
+--------------------------------------------------
+
+-- MULTIPLA ESCOLHA
+INSERT INTO QuestaoObjetiva (idQuestao, tipoObjetiva) VALUES
+(1, 'MULTIPLA'),
+(3, 'MULTIPLA');
+
+--------------------------------------------------
+-- QUESTÕES DISCURSIVAS
+--------------------------------------------------
+INSERT INTO QuestaoDiscursiva (idQuestao, respostaEsperada) VALUES
+(2, 'Processo de organizacao dos dados para evitar redundancia e inconsistencias.');
+
+--------------------------------------------------
+-- ALTERNATIVAS (SÓ PARA OBJETIVAS)
+--------------------------------------------------
 INSERT INTO Alternativa (idQuestao, descricao, correta) VALUES
 (1, 'Um campo que identifica unicamente cada registro.', TRUE),
 (1, 'Um campo usado apenas para ordenacao.', FALSE),

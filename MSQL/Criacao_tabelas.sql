@@ -1,7 +1,7 @@
 -- LOCALIZAÇÃO
 CREATE TABLE Estado (
   idEstado INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  uf CHAR(2) NOT NULL,
+  uf CHAR(2) NOT NULL UNIQUE,
   nome VARCHAR(50) NOT NULL UNIQUE
 );
 
@@ -16,7 +16,7 @@ CREATE TABLE Cidade (
 CREATE TABLE Bairro (
   idBairro INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(45) NOT NULL,
-  idCidade  INT UNSIGNED NOT NULL,
+  idCidade INT UNSIGNED NOT NULL,
   FOREIGN KEY (idCidade) REFERENCES Cidade(idCidade)
 );
 
@@ -62,8 +62,8 @@ CREATE TABLE Disciplina (
 );
 
 CREATE TABLE Curso_Disciplina (
-  idCurso INT UNSIGNED  NOT NULL,
-  idDisciplina INT UNSIGNED  NOT NULL,
+  idCurso INT UNSIGNED NOT NULL,
+  idDisciplina INT UNSIGNED NOT NULL,
   PRIMARY KEY (idCurso, idDisciplina),
   FOREIGN KEY (idCurso) REFERENCES Curso(idCurso),
   FOREIGN KEY (idDisciplina) REFERENCES Disciplina(idDisciplina)
@@ -73,8 +73,8 @@ CREATE TABLE Curso_Disciplina (
 CREATE TABLE Usuario (
   idUsuario INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(50) NOT NULL,
-  email VARCHAR(50) NOT NULL,
-  senha VARCHAR(30) NOT NULL,
+  email VARCHAR(50) NOT NULL UNIQUE,
+  senha VARCHAR(60) NOT NULL,
   tipo INT NOT NULL
 );
 
@@ -110,31 +110,56 @@ CREATE TABLE Turma (
 );
 
 CREATE TABLE Discente_Turma (
-  idDiscente INT UNSIGNED  NOT NULL,
-  idTurma INT UNSIGNED  NOT NULL,
+  idDiscente INT UNSIGNED NOT NULL,
+  idTurma INT UNSIGNED NOT NULL,
   PRIMARY KEY (idDiscente, idTurma),
   FOREIGN KEY (idDiscente) REFERENCES Discente(idDiscente),
   FOREIGN KEY (idTurma) REFERENCES Turma(idTurma)
 );
 
--- QUESTÕES
-CREATE TABLE Questao (
-  idQuestao INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  enunciado VARCHAR(100) NOT NULL,
-  tipo INT NOT NULL,
-  dificuldade INT NOT NULL,
-  idDisciplina INT UNSIGNED NOT NULL,
+-- CONTRATO
+CREATE TABLE Contrato (
+  idContrato INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   idDocente INT UNSIGNED NOT NULL,
-  FOREIGN KEY (idDisciplina) REFERENCES Disciplina(idDisciplina),
+  dataInicio DATE NOT NULL,
+  dataValidade DATE NOT NULL,
+  bolsa DECIMAL(10,2) NOT NULL,
   FOREIGN KEY (idDocente) REFERENCES Docente(idDocente)
 );
 
+-- QUESTÕES
+CREATE TABLE Questao (
+  idQuestao INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  enunciado VARCHAR(255) NOT NULL,
+  dificuldade INT NOT NULL,
+  idDisciplina INT UNSIGNED NOT NULL,
+  idContrato INT UNSIGNED NOT NULL,
+  FOREIGN KEY (idDisciplina) REFERENCES Disciplina(idDisciplina),
+  FOREIGN KEY (idContrato) REFERENCES Contrato(idContrato)
+);
+
+-- QUESTÕES Objetivas
+CREATE TABLE QuestaoObjetiva (
+  idQuestao INT UNSIGNED PRIMARY KEY,
+  tipoObjetiva VARCHAR(10) NOT NULL,
+  CHECK (tipoObjetiva IN ('VF', 'MULTIPLA', 'SOMA')),
+  FOREIGN KEY (idQuestao) REFERENCES Questao(idQuestao)
+);
+
+-- QUESTÕES Discursivas
+CREATE TABLE QuestaoDiscursiva (
+  idQuestao INT UNSIGNED PRIMARY KEY,
+  respostaEsperada TEXT,
+  FOREIGN KEY (idQuestao) REFERENCES Questao(idQuestao)
+);
+
+-- ALTERNATIVAS
 CREATE TABLE Alternativa (
   idAlternativa INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   idQuestao INT UNSIGNED NOT NULL,
   descricao VARCHAR(100),
   correta BOOLEAN,
-  FOREIGN KEY (idQuestao) REFERENCES Questao(idQuestao)
+  FOREIGN KEY (idQuestao) REFERENCES QuestaoObjetiva(idQuestao)
 );
 
 -- PROVA / AVALIAÇÃO
@@ -148,7 +173,7 @@ CREATE TABLE Avaliacao (
 );
 
 CREATE TABLE Avaliacao_Questao (
-  idAvaliacao INT UNSIGNED  NOT NULL,
+  idAvaliacao INT UNSIGNED NOT NULL,
   idQuestao INT UNSIGNED NOT NULL,
   PRIMARY KEY (idAvaliacao, idQuestao),
   FOREIGN KEY (idAvaliacao) REFERENCES Avaliacao(idAvaliacao),
@@ -169,8 +194,7 @@ CREATE TABLE Resultado (
   idResultado INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   idAplicacao INT UNSIGNED NOT NULL,
   idDiscente INT UNSIGNED NOT NULL,
-  nota DECIMAL(4,2)  NOT NULL,
+  nota DECIMAL(4,2) NOT NULL,
   FOREIGN KEY (idAplicacao) REFERENCES Aplicacao(idAplicacao),
   FOREIGN KEY (idDiscente) REFERENCES Discente(idDiscente)
 );
-
