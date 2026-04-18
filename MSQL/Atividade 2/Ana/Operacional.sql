@@ -13,7 +13,7 @@ JOIN Turma ON Aplicacao.idTurma = Turma.idTurma
 JOIN Disciplina ON Turma.idDisciplina = Disciplina.idDisciplina
 WHERE Turma.idDocente = 1;
 
--- -- O professor quer visualizar as questões que ele criou
+-- O professor quer visualizar as questões que ele criou
 SELECT 
   Usuario.nome AS nome_docente,
   Questao.idQuestao,
