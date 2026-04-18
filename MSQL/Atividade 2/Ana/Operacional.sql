@@ -13,16 +13,16 @@ JOIN Turma ON Aplicacao.idTurma = Turma.idTurma
 JOIN Disciplina ON Turma.idDisciplina = Disciplina.idDisciplina
 WHERE Turma.idDocente = 1;
 
--- O departamento quer analisar quais disciplinas cada professor está lecionando
+-- -- O professor quer visualizar as questões que ele criou
 SELECT 
   Usuario.nome AS nome_docente,
-  Disciplina.nome AS disciplina,
-  Curso.nome AS curso,
-  Turma.semestre,
-  Turma.ano
-FROM Turma
-JOIN Docente ON Turma.idDocente = Docente.idDocente
+  Questao.idQuestao,
+  Questao.enunciado,
+  Questao.dificuldade,
+  Disciplina.nome AS disciplina
+FROM Questao
+JOIN Contrato ON Questao.idContrato = Contrato.idContrato
+JOIN Docente ON Contrato.idDocente = Docente.idDocente
 JOIN Usuario ON Docente.idUsuario = Usuario.idUsuario
-JOIN Disciplina ON Turma.idDisciplina = Disciplina.idDisciplina
-JOIN Curso ON Turma.idCurso = Curso.idCurso
-ORDER BY Usuario.nome, Turma.ano, Turma.semestre;
+JOIN Disciplina ON Questao.idDisciplina = Disciplina.idDisciplina
+WHERE Docente.idDocente = 1;
