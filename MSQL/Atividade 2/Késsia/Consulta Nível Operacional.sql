@@ -6,7 +6,7 @@ join avaliacao av on ap.idAvaliacao = av.idAvaliacao)
 join disciplina dis on av.idDisciplina = dis.idDisciplina)
 Where d.matricula = 2026001;
 
--- O aluno quer ver em que disciplinas está matriculado e o docente que adiministra 
+-- O aluno quer ver em que disciplinas está matriculado e o docente que a administra
 Select d.matricula As Discente, dis.nome As Disciplina, a.nome As Docente
 From (((((discente d join discente_turma dt on dt.idDiscente = d.idDiscente) 
 join turma t on dt.idTurma = t.idTurma) 
