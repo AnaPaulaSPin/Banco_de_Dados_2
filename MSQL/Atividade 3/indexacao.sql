@@ -54,3 +54,29 @@ WHERE t.idCurso = 1;
 SHOW PROFILES;
 
 
+-- =====================================================
+-- 3. ÍNDICE: BUSCA DE QUESTÕES POR DIFICULDADE
+-- =====================================================
+
+-- Criação do índice
+CREATE INDEX idx_questao_dificuldade
+ON Questao(dificuldade);
+
+-- -------------------------------------
+-- Consulta de teste (EXPLAIN)
+-- -------------------------------------
+EXPLAIN
+SELECT *
+FROM Questao
+WHERE dificuldade = 2;
+
+-- -------------------------------------
+-- Teste de performance
+-- -------------------------------------
+SET profiling = 1;
+
+SELECT *
+FROM Questao
+WHERE dificuldade = 2;
+
+SHOW PROFILES;
