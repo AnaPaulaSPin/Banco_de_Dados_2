@@ -198,3 +198,14 @@ CREATE TABLE Resultado (
   FOREIGN KEY (idAplicacao) REFERENCES Aplicacao(idAplicacao),
   FOREIGN KEY (idDiscente) REFERENCES Discente(idDiscente)
 );
+
+-- =====================================================
+-- TABELA DE AUDITORIA
+-- =====================================================
+CREATE TABLE Auditoria (
+  idAuditoria INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  tabela_afetada VARCHAR(50) NOT NULL,
+  idRegistro INT UNSIGNED NOT NULL,
+  acao VARCHAR(20) NOT NULL,
+  data_acao DATETIME NOT NULL
+);
