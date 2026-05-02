@@ -209,3 +209,18 @@ CREATE TABLE Auditoria (
   acao VARCHAR(20) NOT NULL,
   data_acao DATETIME NOT NULL
 );
+
+-- =====================================================
+-- TABELA DE FOLHA RESPOSTA ALUNO
+-- =====================================================
+
+CREATE TABLE Resposta_Aluno (
+  idResposta INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  idDiscente INT UNSIGNED NOT NULL,
+  idAvaliacao INT UNSIGNED NOT NULL,
+  idQuestao INT UNSIGNED NOT NULL,
+  acertou BOOLEAN NOT NULL,
+  FOREIGN KEY (idDiscente) REFERENCES Discente(idDiscente),
+  FOREIGN KEY (idAvaliacao) REFERENCES Avaliacao(idAvaliacao),
+  FOREIGN KEY (idQuestao) REFERENCES Questao(idQuestao)
+);
