@@ -1,1 +1,0 @@
-DELETE FROM Disciplina WHERE idDisciplina = 1;
