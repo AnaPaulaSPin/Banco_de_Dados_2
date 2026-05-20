@@ -1,5 +1,6 @@
--- CREATE DATABASE SistemaEnergiaSolar;
-use SistemaEnergiaSolar ;
+CREATE DATABASE IF NOT EXISTS SistemaEnergiaSolar;
+USE SistemaEnergiaSolar;
+
 -- =====================================================
 -- CIDADE
 -- =====================================================
@@ -18,7 +19,9 @@ CREATE TABLE Bairro (
   nome VARCHAR(45) NOT NULL,
   regiao VARCHAR(50) NOT NULL,
   idCidade INT UNSIGNED NOT NULL,
-  FOREIGN KEY (idCidade) REFERENCES Cidade(idCidade)
+
+  FOREIGN KEY (idCidade) 
+    REFERENCES Cidade(idCidade)
 );
 
 -- =====================================================
@@ -30,7 +33,10 @@ CREATE TABLE SistemaPainel (
   capacidadeKwp FLOAT NOT NULL,
   dataInstalacao DATETIME NOT NULL,
   vidaUtilEstimada INT NOT NULL,
-  status ENUM('ATIVO', 'INATIVO', 'MANUTENCAO') NOT NULL
+  status ENUM('ATIVO', 'INATIVO', 'MANUTENCAO') NOT NULL,
+
+  CHECK (capacidadeKwp > 0),
+  CHECK (vidaUtilEstimada > 0)
 );
 
 -- =====================================================
@@ -46,8 +52,11 @@ CREATE TABLE PainelSolar (
   dataFabricacao DATE NOT NULL,
   status ENUM('ATIVO', 'INATIVO', 'MANUTENCAO') NOT NULL,
   idSistemaPainel INT UNSIGNED NOT NULL,
+
   FOREIGN KEY (idSistemaPainel)
-    REFERENCES SistemaPainel(idSistemaPainel)
+    REFERENCES SistemaPainel(idSistemaPainel),
+
+  CHECK (potenciaWatts > 0)
 );
 
 -- =====================================================
@@ -69,6 +78,7 @@ CREATE TABLE UnidadeConsumidora (
   email VARCHAR(45),
   dataCadastro DATE NOT NULL,
   idBairro INT UNSIGNED NOT NULL,
+
   FOREIGN KEY (idBairro)
     REFERENCES Bairro(idBairro)
 );
@@ -99,8 +109,15 @@ CREATE TABLE MedicaoEnergia (
   economiaEstimada FLOAT NOT NULL,
   co2EvitarKg FLOAT NOT NULL,
   idSistemaPainel INT UNSIGNED NOT NULL,
+
   FOREIGN KEY (idSistemaPainel)
-    REFERENCES SistemaPainel(idSistemaPainel)
+    REFERENCES SistemaPainel(idSistemaPainel),
+
+  CHECK (energiaGeradaKwh >= 0),
+  CHECK (energiaConsumidaKwh >= 0),
+  CHECK (energiaExcedenteKwh >= 0),
+  CHECK (economiaEstimada >= 0),
+  CHECK (co2EvitarKg >= 0)
 );
 
 -- =====================================================
@@ -148,5 +165,8 @@ CREATE TABLE Contrato (
     REFERENCES SistemaPainel(idSistemaPainel),
 
   FOREIGN KEY (idEmpresaInstaladora)
-    REFERENCES EmpresaInstaladora(idEmpresa)
+    REFERENCES EmpresaInstaladora(idEmpresa),
+
+  CHECK (valor > 0),
+  CHECK (dataFim >= dataInicio)
 );
