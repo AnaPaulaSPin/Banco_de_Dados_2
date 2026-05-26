@@ -134,7 +134,9 @@ CREATE TABLE Usuario (
     'ADMIN',
     'GESTOR',
     'OPERADOR'
-  ) NOT NULL
+  ) NOT NULL,
+  status
+  ENUM('ATIVO', 'INATIVO', 'SUSPENSO') DEFAULT 'ATIVO'
 );
 
 -- =====================================================

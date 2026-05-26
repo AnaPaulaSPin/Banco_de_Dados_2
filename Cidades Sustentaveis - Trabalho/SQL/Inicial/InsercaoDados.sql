@@ -127,7 +127,7 @@ INSERT INTO MedicaoEnergia
 -- =====================================================
 
 INSERT INTO Usuario
-(nome, email, senha, ultimoLogin, perfilAcesso) VALUES
+(nome, email, senha, ultimoLogin, perfilAcesso, status) VALUES
 ('Administrador Geral', 'admin@email.com', '123456', '2024-04-10 08:00:00', 'ADMIN'),
 ('Gestor Municipal', 'gestor@email.com', '123456', '2024-04-10 09:30:00', 'GESTOR'),
 ('Operador Sistema', 'operador@email.com', '123456', '2024-04-10 10:15:00', 'OPERADOR'),
