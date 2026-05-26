@@ -19,7 +19,7 @@ CREATE PROCEDURE excluir_contrato(IN ex_id INT)
 BEGIN
     UPDATE contrato
     SET status = 'ENCERRADO'
-    WHERE idcontrato = ex_id;
+    WHERE idContrato = ex_id;
 END //
 DELIMITER ;
 
