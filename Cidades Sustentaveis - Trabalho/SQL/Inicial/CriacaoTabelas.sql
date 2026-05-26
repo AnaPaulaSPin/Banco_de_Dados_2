@@ -172,3 +172,19 @@ CREATE TABLE Contrato (
   CHECK (valor > 0),
   CHECK (dataFim >= dataInicio)
 );
+
+-- =====================================================
+-- AUDITORIA 
+-- =====================================================
+CREATE TABLE auditoriaSistema (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tabela VARCHAR(45),
+    campo VARCHAR(45),
+    valor_antigo VARCHAR(45),
+    valor_novo VARCHAR(45),
+    usuario VARCHAR(45),
+    ip VARCHAR(45),
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
