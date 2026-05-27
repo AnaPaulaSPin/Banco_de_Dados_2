@@ -2,28 +2,60 @@
 -- CONTROLE DE ACESSO (DCL)
 -- =====================================================
 
--- 1. Criação do Usuário ADMINISTRADOR
-CREATE USER 'admin_solar'@'localhost' IDENTIFIED BY 'AdminSolar@2026';
--- Permissão total no banco de dados
-GRANT ALL PRIVILEGES ON SistemaEnergiaSolar.* TO 'admin_solar'@'localhost';
-
--- 2. Criação do Usuário GESTOR (Focado em Relatórios, Views e Funções)
-CREATE USER 'gestor_solar'@'localhost' IDENTIFIED BY 'GestorSolar@2026';
--- Permissão de leitura em todas as tabelas e views
-GRANT SELECT ON SistemaEnergiaSolar.* TO 'gestor_solar'@'localhost';
--- Permissão para executar procedures e funções
-GRANT EXECUTE ON SistemaEnergiaSolar.* TO 'gestor_solar'@'localhost';
-
--- 3. Criação do Usuário OPERADOR (Aplicações operacionais e API de inserção)
-CREATE USER 'operador_solar'@'localhost' IDENTIFIED BY 'OperadorSolar@2026';
--- Permissão de leitura no escopo geral
-GRANT SELECT ON SistemaEnergiaSolar.* TO 'operador_solar'@'localhost';
--- Permissões de CRUD (sem DELETE, forçando exclusão lógica já mapeada nas procedures)
-GRANT INSERT, UPDATE ON SistemaEnergiaSolar.MedicaoEnergia TO 'operador_solar'@'localhost';
-GRANT INSERT, UPDATE ON SistemaEnergiaSolar.UnidadeConsumidora TO 'operador_solar'@'localhost';
-GRANT INSERT, UPDATE ON SistemaEnergiaSolar.PainelSolar TO 'operador_solar'@'localhost';
-GRANT INSERT, UPDATE ON SistemaEnergiaSolar.SistemaPainel TO 'operador_solar'@'localhost';
-GRANT INSERT, UPDATE ON SistemaEnergiaSolar.Contrato TO 'operador_solar'@'localhost';
-
--- Aplica as definições de privilégios no servidor
+-- ---------------------------------------------------
+-- Usuário 1: admin_solar
+-- Perfil ADMIN — controle total do banco.
+-- ---------------------------------------------------
+CREATE USER 'admin_solar'@'localhost'
+    IDENTIFIED BY 'Admin@Solar2026';
+ 
+GRANT ALL PRIVILEGES
+    ON SistemaEnergiaSolar.*
+    TO 'admin_solar'@'localhost'
+    WITH GRANT OPTION;
+ 
+ 
+-- ---------------------------------------------------
+-- Usuário 2: gestor_solar
+-- Perfil GESTOR — leitura completa + execução.
+-- Sem acesso à tabela de auditoria.
+-- ---------------------------------------------------
+CREATE USER 'gestor_solar'@'localhost'
+    IDENTIFIED BY 'Gestor@Solar2026';
+ 
+GRANT SELECT  ON SistemaEnergiaSolar.*  TO 'gestor_solar'@'localhost';
+GRANT EXECUTE ON SistemaEnergiaSolar.*  TO 'gestor_solar'@'localhost';
+ 
+REVOKE SELECT
+    ON SistemaEnergiaSolar.auditoria_sistema
+    FROM 'gestor_solar'@'localhost';
+ 
+ 
+-- ---------------------------------------------------
+-- Usuário 3: operador_solar
+-- Perfil OPERADOR — usado pela API PyMySQL.
+-- Leitura dos dados técnicos + inserção de medições
+-- + execução de procedures e functions.
+-- Sem acesso a contratos, usuários ou auditoria.
+-- ---------------------------------------------------
+CREATE USER 'operador_solar'@'localhost'
+    IDENTIFIED BY 'Operador@Solar2026';
+ 
+GRANT SELECT ON SistemaEnergiaSolar.Cidade              TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.Bairro              TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.SistemaPainel       TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.PainelSolar         TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.MedicaoEnergia      TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.UnidadeConsumidora  TO 'operador_solar'@'localhost';
+ 
+GRANT INSERT ON SistemaEnergiaSolar.MedicaoEnergia      TO 'operador_solar'@'localhost';
+ 
+GRANT SELECT ON SistemaEnergiaSolar.vw_desempenho_sistemas  TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.vw_alertas_manutencao   TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.vw_impacto_por_cidade   TO 'operador_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.vw_contratos_ativos     TO 'operador_solar'@'localhost';
+ 
+GRANT EXECUTE ON SistemaEnergiaSolar.* TO 'operador_solar'@'localhost';
+ 
+ 
 FLUSH PRIVILEGES;
