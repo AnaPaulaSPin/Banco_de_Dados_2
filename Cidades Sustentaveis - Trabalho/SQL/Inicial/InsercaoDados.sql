@@ -128,10 +128,10 @@ INSERT INTO MedicaoEnergia
 
 INSERT INTO Usuario
 (nome, email, senha, ultimoLogin, perfilAcesso, status) VALUES
-('Administrador Geral', 'admin@email.com', '123456', '2024-04-10 08:00:00', 'ADMIN'),
-('Gestor Municipal', 'gestor@email.com', '123456', '2024-04-10 09:30:00', 'GESTOR'),
-('Operador Sistema', 'operador@email.com', '123456', '2024-04-10 10:15:00', 'OPERADOR'),
-('Analista Energia', 'analista@email.com', '123456', '2024-04-09 15:00:00', 'GESTOR');
+('Administrador Geral', 'admin@email.com', '123456', '2024-04-10 08:00:00', 'ADMIN', 'ATIVO'),
+('Gestor Municipal', 'gestor@email.com', '123456', '2024-04-10 09:30:00', 'GESTOR', 'ATIVO'),
+('Operador Sistema', 'operador@email.com', '123456', '2024-04-10 10:15:00', 'OPERADOR', 'ATIVO'),
+('Analista Energia', 'analista@email.com', '123456', '2024-04-09 15:00:00', 'GESTOR', 'ATIVO');
 
 -- =====================================================
 -- CONTRATO
