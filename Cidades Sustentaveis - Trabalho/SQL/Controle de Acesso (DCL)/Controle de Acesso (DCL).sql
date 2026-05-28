@@ -23,12 +23,25 @@ GRANT ALL PRIVILEGES
 CREATE USER 'gestor_solar'@'localhost'
     IDENTIFIED BY 'Gestor@Solar2026';
  
-GRANT SELECT  ON SistemaEnergiaSolar.*  TO 'gestor_solar'@'localhost';
-GRANT EXECUTE ON SistemaEnergiaSolar.*  TO 'gestor_solar'@'localhost';
- 
-REVOKE SELECT
-    ON SistemaEnergiaSolar.auditoria_sistema
-    FROM 'gestor_solar'@'localhost';
+-- Em vez de usar .*, liberamos o SELECT para cada tabela do escopo de negócio
+GRANT SELECT ON SistemaEnergiaSolar.Cidade               TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.Bairro               TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.SistemaPainel        TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.PainelSolar          TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.UnidadeConsumidora   TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.EmpresaInstaladora   TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.MedicaoEnergia       TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.Usuario              TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.Contrato             TO 'gestor_solar'@'localhost';
+
+-- Liberando acesso de leitura também nas visões gerenciais
+GRANT SELECT ON SistemaEnergiaSolar.vw_desempenho_sistemas  TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.vw_alertas_manutencao   TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.vw_impacto_por_cidade   TO 'gestor_solar'@'localhost';
+GRANT SELECT ON SistemaEnergiaSolar.vw_contratos_ativos     TO 'gestor_solar'@'localhost';
+
+-- Mantém a permissão para executar as Functions e Procedures criadas no banco
+GRANT EXECUTE ON SistemaEnergiaSolar.* TO 'gestor_solar'@'localhost';
  
  
 -- ---------------------------------------------------
