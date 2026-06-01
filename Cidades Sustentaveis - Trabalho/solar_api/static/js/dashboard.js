@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
     carregarCidades();
 
-    // Quando o usuário trocar a cidade, atualiza os dados
     document.getElementById("cidadeSelect").addEventListener("change", (e) => {
         const idCidade = e.target.value;
         if (idCidade) {
             carregarResumoCidade(idCidade);
+            carregarUnidades(idCidade); // atualiza tabela ao trocar cidade
         }
     });
 });
@@ -17,7 +17,7 @@ async function carregarCidades() {
         const cidades = await response.json();
         
         const select = document.getElementById("cidadeSelect");
-        select.innerHTML = ''; // Limpa as opções padrão
+        select.innerHTML = '';
 
         if (cidades.length === 0) {
             select.innerHTML = '<option value="">Nenhuma cidade cadastrada</option>';
@@ -33,32 +33,28 @@ async function carregarCidades() {
 
         // Carrega automaticamente os dados da primeira cidade da lista
         carregarResumoCidade(cidades[0].idCidade);
-        carregarUnidades();
-
+        carregarUnidades(cidades[0].idCidade); // passa o id da cidade
     } catch (error) {
         console.error("Erro ao carregar cidades:", error);
         alert("Erro de conexão com a API ao buscar cidades.");
     }
 }
 
-// 2. Busca os dados matemáticos consolidados de medição da cidade
+// 2. Busca os dados consolidados de medição da cidade
 async function carregarResumoCidade(idCidade) {
     try {
         const response = await fetch(`/medicoes/resumo/cidade/${idCidade}`);
         
         if (!response.ok) {
-            // Se a API retornar 404 (Sem dados), zeramos o painel
             zerarPainel();
             return;
         }
 
         const dados = await response.json();
 
-        // Atualiza o DOM (HTML) com os dados recebidos
         document.getElementById("kpi-unidades").textContent = dados.total_unidades || 0;
         document.getElementById("kpi-gerada").innerHTML = `${dados.energia_gerada_kwh} <small>kWh</small>`;
         
-        // Formata o dinheiro para padrão BRL
         const economiaFormatada = parseFloat(dados.economia_total_reais).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById("kpi-economia").textContent = economiaFormatada;
         
@@ -69,10 +65,10 @@ async function carregarResumoCidade(idCidade) {
     }
 }
 
-// 3. Busca e lista todas as unidades na tabela (como apoio visual)
-async function carregarUnidades() {
+// 3. Busca e lista as unidades da cidade selecionada na tabela
+async function carregarUnidades(idCidade) {
     try {
-        const response = await fetch('/unidades');
+        const response = await fetch(`/unidades/cidade/${idCidade}`);
         const unidades = await response.json();
         
         const tbody = document.querySelector("#unidadesTable tbody");
@@ -93,7 +89,7 @@ async function carregarUnidades() {
     }
 }
 
-// Função auxiliar para zerar o painel visualmente se uma cidade não tiver medições
+// Zera o painel se a cidade não tiver medições
 function zerarPainel() {
     document.getElementById("kpi-unidades").textContent = "0";
     document.getElementById("kpi-gerada").innerHTML = `0 <small>kWh</small>`;

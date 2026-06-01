@@ -1,13 +1,13 @@
 # routes/unidades.py
 # Endpoints para UnidadeConsumidora.
-# Rotas: GET /unidades, GET /unidades/<id>, POST /unidades, PUT /unidades/<id>
+# Rotas: GET /unidades, GET /unidades/cidade/<id>, GET /unidades/<id>,
+#        POST /unidades, PUT /unidades/<id>
 
 from flask import Blueprint, jsonify, request
 from database import get_connection
 
 unidades_bp = Blueprint('unidades', __name__)
 
-# Valores permitidos pelo ENUM no banco
 TIPOS_UNIDADE = ['RESIDENCIAL', 'COMERCIAL', 'PUBLICA', 'INDUSTRIAL']
 
 
@@ -36,6 +36,41 @@ def listar_unidades():
                 JOIN Cidade ci ON b.idCidade     = ci.idCidade
                 ORDER BY uc.nomeResponsavel
             """)
+            unidades = cursor.fetchall()
+        return jsonify(unidades), 200
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
+    finally:
+        conn.close()
+
+
+# ─────────────────────────────────────────────
+# GET /unidades/cidade/<id_cidade>
+# Lista unidades de uma cidade específica.
+# NOVO: usado pelo dashboard para filtrar a tabela pela cidade selecionada.
+# ─────────────────────────────────────────────
+@unidades_bp.route('/unidades/cidade/<int:id_cidade>', methods=['GET'])
+def listar_unidades_por_cidade(id_cidade):
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT
+                    uc.nomeResponsavel,
+                    uc.tipoUnidade,
+                    uc.logradouro,
+                    uc.numeroResidencia,
+                    uc.telefone,
+                    uc.email,
+                    uc.dataCadastro,
+                    b.nome  AS bairro,
+                    ci.nome AS cidade
+                FROM UnidadeConsumidora uc
+                JOIN Bairro b  ON uc.idBairro = b.idBairro
+                JOIN Cidade ci ON b.idCidade   = ci.idCidade
+                WHERE ci.idCidade = %s
+                ORDER BY uc.nomeResponsavel
+            """, (id_cidade,))
             unidades = cursor.fetchall()
         return jsonify(unidades), 200
     except Exception as e:
@@ -76,23 +111,11 @@ def buscar_unidade(id):
 # ─────────────────────────────────────────────
 # POST /unidades
 # Cadastra uma nova unidade consumidora.
-# Body JSON esperado:
-# {
-#   "nomeResponsavel": "João Silva",
-#   "tipoUnidade": "RESIDENCIAL",
-#   "logradouro": "Rua das Flores",
-#   "numeroResidencia": "123",
-#   "telefone": "71999998888",
-#   "email": "joao@gmail.com",
-#   "dataCadastro": "2025-01-15",
-#   "idBairro": 2
-# }
 # ─────────────────────────────────────────────
 @unidades_bp.route('/unidades', methods=['POST'])
 def criar_unidade():
     dados = request.get_json()
 
-    # Valida campos obrigatórios
     campos_obrigatorios = [
         'nomeResponsavel', 'tipoUnidade', 'logradouro',
         'numeroResidencia', 'telefone', 'dataCadastro', 'idBairro'
@@ -101,7 +124,6 @@ def criar_unidade():
         if not dados.get(campo):
             return jsonify({'erro': f'Campo "{campo}" é obrigatório'}), 400
 
-    # Valida o tipo de unidade (deve ser um dos valores do ENUM)
     if dados['tipoUnidade'] not in TIPOS_UNIDADE:
         return jsonify({'erro': f'tipoUnidade inválido. Use um de: {TIPOS_UNIDADE}'}), 400
 
@@ -119,7 +141,7 @@ def criar_unidade():
                 dados['logradouro'],
                 dados['numeroResidencia'],
                 dados['telefone'],
-                dados.get('email'),          # email é opcional no schema
+                dados.get('email'),
                 dados['dataCadastro'],
                 dados['idBairro']
             ))
@@ -135,7 +157,6 @@ def criar_unidade():
 # ─────────────────────────────────────────────
 # PUT /unidades/<id>
 # Atualiza telefone e email de uma unidade consumidora.
-# Body JSON: { "telefone": "71999991111", "email": "novo@gmail.com" }
 # ─────────────────────────────────────────────
 @unidades_bp.route('/unidades/<int:id>', methods=['PUT'])
 def atualizar_unidade(id):

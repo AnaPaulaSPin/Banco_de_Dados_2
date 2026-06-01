@@ -39,7 +39,6 @@ def medicoes_por_sistema(id_sistema):
 # GET /medicoes/unidade/<id_unidade>
 # Busca medições de uma unidade consumidora.
 # Precisa navegar: UnidadeConsumidora → Contrato → SistemaPainel → MedicaoEnergia
-# Exatamente como na Consulta Operacional 1 do projeto.
 # ─────────────────────────────────────────────
 @medicoes_bp.route('/medicoes/unidade/<int:id_unidade>', methods=['GET'])
 def medicoes_por_unidade(id_unidade):
@@ -72,8 +71,11 @@ def medicoes_por_unidade(id_unidade):
 
 # ─────────────────────────────────────────────
 # GET /medicoes/resumo/cidade/<id_cidade>
-# Resumo energético total de uma cidade (Consulta Estratégica do projeto).
-# Agrega: unidades, energia gerada, economia total, CO₂ evitado.
+# Resumo energético total de uma cidade.
+#
+# CORREÇÃO: total_unidades agora conta TODAS as unidades da cidade
+# (independente de terem contrato ou medição), usando subquery separada.
+# Os dados energéticos continuam agregando só quem tem medições.
 # ─────────────────────────────────────────────
 @medicoes_bp.route('/medicoes/resumo/cidade/<int:id_cidade>', methods=['GET'])
 def resumo_por_cidade(id_cidade):
@@ -83,12 +85,21 @@ def resumo_por_cidade(id_cidade):
             cursor.execute("""
                 SELECT
                     ci.nome                                        AS cidade,
-                    COUNT(DISTINCT uc.idUnidadeConsumidora)        AS total_unidades,
+
+                    -- Conta TODAS as unidades da cidade, com ou sem contrato/medição
+                    (
+                        SELECT COUNT(*)
+                        FROM UnidadeConsumidora uc2
+                        JOIN Bairro b2 ON uc2.idBairro = b2.idBairro
+                        WHERE b2.idCidade = ci.idCidade
+                    )                                              AS total_unidades,
+
                     COUNT(DISTINCT sp.idSistemaPainel)             AS total_sistemas,
                     ROUND(SUM(me.energiaGeradaKwh),   2)           AS energia_gerada_kwh,
                     ROUND(SUM(me.energiaConsumidaKwh),2)           AS energia_consumida_kwh,
                     ROUND(SUM(me.economiaEstimada),   2)           AS economia_total_reais,
                     ROUND(SUM(me.co2EvitarKg),        2)           AS co2_evitado_kg
+
                 FROM Cidade ci
                 JOIN Bairro             b  ON ci.idCidade              = b.idCidade
                 JOIN UnidadeConsumidora uc ON b.idBairro               = uc.idBairro
@@ -111,16 +122,6 @@ def resumo_por_cidade(id_cidade):
 # ─────────────────────────────────────────────
 # POST /medicoes
 # Registra uma nova medição de energia.
-# Body JSON:
-# {
-#   "dataMedicao": "2025-05-01",
-#   "energiaGeradaKwh": 12.5,
-#   "energiaConsumidaKwh": 10.0,
-#   "energiaExcedenteKwh": 2.5,
-#   "economiaEstimada": 15.75,
-#   "co2EvitarKg": 6.2,
-#   "idSistemaPainel": 1
-# }
 # ─────────────────────────────────────────────
 @medicoes_bp.route('/medicoes', methods=['POST'])
 def criar_medicao():
@@ -134,7 +135,6 @@ def criar_medicao():
         if dados.get(campo) is None:
             return jsonify({'erro': f'Campo "{campo}" é obrigatório'}), 400
 
-    # Validações de domínio (mesmas constraints CHECK do banco)
     campos_nao_negativos = [
         'energiaGeradaKwh', 'energiaConsumidaKwh',
         'energiaExcedenteKwh', 'economiaEstimada', 'co2EvitarKg'
