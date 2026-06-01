@@ -73,6 +73,10 @@ GRANT EXECUTE ON SistemaEnergiaSolar.* TO 'operador_solar'@'localhost';
  
 FLUSH PRIVILEGES;
 
+-- ---------------------------------------------------
+-- Usuário 4: auth_solar
+-- Resolver o login
+-- ---------------------------------------------------
 CREATE USER 'auth_solar'@'localhost' IDENTIFIED BY 'Auth@Solar2026';
 GRANT SELECT ON SistemaEnergiaSolar.Usuario TO 'auth_solar'@'localhost';
 FLUSH PRIVILEGES;
