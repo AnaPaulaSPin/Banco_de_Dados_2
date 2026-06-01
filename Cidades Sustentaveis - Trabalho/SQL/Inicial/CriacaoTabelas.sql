@@ -177,14 +177,14 @@ CREATE TABLE Contrato (
 -- AUDITORIA 
 -- =====================================================
 CREATE TABLE auditoriaSistema (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     tabela VARCHAR(45),
     campo VARCHAR(45),
-    valor_antigo VARCHAR(45),
-    valor_novo VARCHAR(45),
+    valorAntigo VARCHAR(255),
+    valorNovo VARCHAR(255),
     usuario VARCHAR(45),
     ip VARCHAR(45),
-    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP
+    dataHora DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 
