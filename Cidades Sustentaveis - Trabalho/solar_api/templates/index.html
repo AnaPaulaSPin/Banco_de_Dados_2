@@ -5,11 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Energia Solar</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        .navbar-user span { opacity: 0.85; }
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 0.3rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.35); }
+        .perfil-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+    </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">SolarTech Dashboard</div>
+        <div class="navbar-user">
+            <span id="nav-nome">...</span>
+            <span class="perfil-badge" id="nav-perfil"></span>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
     </nav>
 
     <main class="container">
@@ -43,7 +76,7 @@
         </section>
 
         <section class="table-section">
-            <h2>Todas as Unidades Consumidoras</h2>
+            <h2>Unidades Consumidoras</h2>
             <div class="table-responsive">
                 <table id="unidadesTable">
                     <thead>
@@ -54,8 +87,7 @@
                             <th>Cidade</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </section>
