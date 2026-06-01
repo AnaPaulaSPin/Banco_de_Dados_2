@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Energia Solar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">SolarTech Dashboard</div>
+    </nav>
+
+    <main class="container">
+        <header class="dashboard-header">
+            <h1>Resumo Operacional</h1>
+            <div class="filter-group">
+                <label for="cidadeSelect">Selecione a Cidade:</label>
+                <select id="cidadeSelect">
+                    <option value="">Carregando cidades...</option>
+                </select>
+            </div>
+        </header>
+
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <h3>Total de Unidades</h3>
+                <p id="kpi-unidades">0</p>
+            </div>
+            <div class="kpi-card">
+                <h3>Energia Gerada</h3>
+                <p id="kpi-gerada">0 <small>kWh</small></p>
+            </div>
+            <div class="kpi-card economia">
+                <h3>Economia Estimada</h3>
+                <p id="kpi-economia">R$ 0,00</p>
+            </div>
+            <div class="kpi-card ambiental">
+                <h3>CO₂ Evitado</h3>
+                <p id="kpi-co2">0 <small>kg</small></p>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <h2>Todas as Unidades Consumidoras</h2>
+            <div class="table-responsive">
+                <table id="unidadesTable">
+                    <thead>
+                        <tr>
+                            <th>Responsável</th>
+                            <th>Tipo</th>
+                            <th>Bairro</th>
+                            <th>Cidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

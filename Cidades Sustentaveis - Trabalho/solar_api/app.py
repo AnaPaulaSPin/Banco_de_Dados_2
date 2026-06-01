@@ -2,7 +2,8 @@
 # Ponto de entrada da aplicação Flask.
 # Cria o app e registra todos os "blueprints" (grupos de rotas).
 
-from flask import Flask
+# app.py
+from flask import Flask, render_template
 
 # Importa cada grupo de rotas (blueprint)
 from routes.cidades   import cidades_bp
@@ -27,6 +28,13 @@ app.register_blueprint(empresas_bp)
 app.register_blueprint(contratos_bp)
 app.register_blueprint(usuarios_bp)
 
+# ─────────────────────────────────────────────
+# NOVA ROTA: Renderiza o Dashboard Web (Frontend)
+# ─────────────────────────────────────────────
+@app.route('/')
+def index():
+    # O Flask procura automaticamente a pasta 'templates'
+    return render_template('index.html')
 
 # Inicia o servidor na porta 5000 com modo debug ativo
 if __name__ == '__main__':

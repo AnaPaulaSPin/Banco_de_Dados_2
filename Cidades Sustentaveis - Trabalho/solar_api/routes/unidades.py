@@ -22,7 +22,6 @@ def listar_unidades():
         with conn.cursor() as cursor:
             cursor.execute("""
                 SELECT
-                    uc.idUnidadeConsumidora,
                     uc.nomeResponsavel,
                     uc.tipoUnidade,
                     uc.logradouro,
