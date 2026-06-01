@@ -1,36 +1,9 @@
 -- =====================================================
 -- VIEWS GERENCIAIS
 -- =====================================================
- 
+  
 -- ---------------------------------------------------
 -- View 1
--- Desempenho consolidado de cada sistema de painéis:
--- totais de geração, consumo, economia, CO₂ e o
--- percentual de autossuficiência via function.
--- Destinada a dashboards e integrações externas.
--- ---------------------------------------------------
-CREATE OR REPLACE VIEW vw_desempenho_sistemas AS
-SELECT
-    sp.idSistemaPainel,
-    sp.capacidadeKwp,
-    sp.status                                             AS status_sistema,
-    sp.dataInstalacao,
-    COUNT(me.idMedicaoEnergia)                            AS total_medicoes,
-    ROUND(SUM(me.energiaGeradaKwh),    2)                 AS energia_gerada_kwh,
-    ROUND(SUM(me.energiaConsumidaKwh), 2)                 AS energia_consumida_kwh,
-    ROUND(SUM(me.energiaExcedenteKwh), 2)                 AS energia_excedente_kwh,
-    ROUND(SUM(me.economiaEstimada),    2)                 AS economia_total_r$,
-    ROUND(SUM(me.co2EvitarKg),         2)                 AS co2_evitado_kg,
-    fn_autossuficiencia_sistema(sp.idSistemaPainel)       AS autossuficiencia_pct
-FROM SistemaPainel sp
-LEFT JOIN MedicaoEnergia me ON sp.idSistemaPainel = me.idSistemaPainel
-GROUP BY
-    sp.idSistemaPainel, sp.capacidadeKwp,
-    sp.status, sp.dataInstalacao;
- 
- 
--- ---------------------------------------------------
--- View 2
 -- Contratos ativos com dados completos: unidade
 -- consumidora, localização, empresa e indicadores
 -- financeiros calculados pela function.
@@ -66,7 +39,7 @@ WHERE c.status = 'ATIVO';
  
  
 -- ---------------------------------------------------
--- View 3
+-- View 2
 -- Impacto ambiental e econômico agrupado por cidade:
 -- quantidade de sistemas, geração total, economia
 -- e CO₂ evitado (em kg e toneladas).
@@ -94,7 +67,7 @@ ORDER BY energia_gerada_kwh DESC;
  
  
 -- ---------------------------------------------------
--- View 4
+-- View 3
 -- Painel de alertas: painéis e sistemas em manutenção
 -- com localização completa e empresa responsável.
 -- Destinada a equipes de campo e sistemas de O&M.
